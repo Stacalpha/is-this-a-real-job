@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer');
 import { EMAIL_ADDR, EMAIL_PASSWORD } from '../config/constants';
 
-export function sendMail(recipientAddr, title, body) {
+export function sendMail(recipientAddr, title, messageBody) {
   var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -14,7 +14,7 @@ export function sendMail(recipientAddr, title, body) {
     from: `ITARJ Notifications <${EMAIL_ADDR}>`,
     to: recipientAddr,
     subject: title,
-    text: body
+    html: messageBody // html body
   };
   
   transporter.sendMail(mailOptions, function(error, info){
