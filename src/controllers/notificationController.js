@@ -20,9 +20,10 @@ const notifyByEmail = async (res, notif)=> {
 
   notif.recipient = await findSingleUser({userId: notif.userId});
 
+  console.log(notif);
   res.render('notificationEmail', notif, (err, renderedEmail)=> {
     if (err) throw err;
-    
+
     sendMail(notif.recipient.email, notif.title, renderedEmail);
   });
 }
