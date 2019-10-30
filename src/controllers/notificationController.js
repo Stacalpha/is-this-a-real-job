@@ -9,23 +9,28 @@ import { getSingleComment } from '../services/commentServices';
 import { findSingleUser } from '../services/userServices';
 
 const notifyByEmail = async (res, notif)=> {
-  if (notif.type == 'comment') {
-    notif.comment = await getSingleComment(notif.commentId);
-    notif.comment.author = notif.comment.user || {};
-    notif.targetPost = notif.comment.invite || {};
-    notif.title = 'One New Comment On Your Job Invite';
+  try {
+    if (notif.type == 'comment') {
+      notif.comment = await getSingleComment(notif.commentId);
+      notif.comment.author = notif.comment.user || {};
+      notif.targetPost = notif.comment.invite || {};
+      notif.title = 'One New Comment On Your Job Invite';
+    }
+    else
+      notif.title = 'Your Job Invite Was Upvoted';
+
+    notif.recipient = await findSingleUser({userId: notif.userId});
+
+    console.log(notif);
+    res.render('notificationEmail', notif, (error, renderedEmail)=> {
+      if (error) throw error;
+
+      sendMail(notif.recipient.email, notif.title, renderedEmail);
+    });
   }
-  else
-    notif.title = 'Your Job Invite Was Upvoted';
-
-  notif.recipient = await findSingleUser({userId: notif.userId});
-
-  console.log(notif);
-  res.render('notificationEmail', notif, (err, renderedEmail)=> {
-    if (err) throw err;
-
-    sendMail(notif.recipient.email, notif.title, renderedEmail);
-  });
+  catch(error) {
+    console.log(error);
+  }
 }
 
 /**
