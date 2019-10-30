@@ -25,9 +25,3 @@ export function sendMail(recipientAddr, title, body) {
     }
   });
 }
-
-export function notifyByEmail(res, params) {
-  res.render('notif.ejs', params, function(err, renderedEmail) {
-    sendMail(recipientAddr, title, renderedEmail);
-  });
-}
