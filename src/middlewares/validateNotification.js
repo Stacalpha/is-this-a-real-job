@@ -33,6 +33,7 @@ export const validateNotificationData = (req, res, next) => {
 
   const notificationSchema = Joi.object().keys(schemaMap);
 
+  console.log(req.body);
   const errors = joiValidator(req.body, notificationSchema);
 
   if (!errors) {

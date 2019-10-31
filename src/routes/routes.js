@@ -47,6 +47,7 @@ import { validateCookies, signUserIn, signUserOut } from '../middlewares/cookieH
 import { getMetrics } from '../controllers/metricsController';
 
 export const initRoutes = app => {
+  app.use((req, res, next)=> {console.log(req.body); next();});
   // Cookie handlers before all
   app.use(validateCookies);
   app.use(signUserIn);

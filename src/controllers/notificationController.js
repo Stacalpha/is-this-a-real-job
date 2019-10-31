@@ -11,15 +11,16 @@ import { findSingleUser } from '../services/userServices';
 const notifyByEmail = async (res, notif)=> {
   try {
     if (notif.type == 'comment') {
-      notif.comment = await getSingleComment(notif.commentId);
+      /*notif.comment = await getSingleComment(notif.commentId);
       notif.comment.author = notif.comment.user || {};
-      notif.targetPost = notif.comment.invite || {};
+      notif.targetPost = notif.comment.invite || {};*/
       notif.title = 'One New Comment On Your Job Invite';
     }
     else
       notif.title = 'Your Job Invite Was Upvoted';
 
     notif.recipient = await findSingleUser({userId: notif.userId});
+    notif.recipient = notif.recipient.dataValues;
 
     console.log(notif);
     res.render('notificationEmail', notif, (error, renderedEmail)=> {
