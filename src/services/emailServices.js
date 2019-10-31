@@ -19,15 +19,15 @@ export async function sendMail(recipientAddr, title, messageBody) {
     html: messageBody // html body
   };
   
-  await transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
+  const info = await transporter.sendMail(mailOptions);
+
+    if (!info) {
+      console.log('error in transporter.sendMail(mailOptions)');
       success = false;
     } else {
       console.log('Email sent: ' + info.response);
       success = true;
     }
-  });
 
   return success;
 }
