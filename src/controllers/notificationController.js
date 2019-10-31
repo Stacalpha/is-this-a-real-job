@@ -9,6 +9,8 @@ import { getSingleComment } from '../services/commentServices';
 import { findSingleUser } from '../services/userServices';
 
 const notifyByEmail = async (res, notif)=> {
+  let mailSent;
+
   try {
     if (notif.type == 'comment') {
       /*notif.comment = await getSingleComment(notif.commentId);
@@ -22,15 +24,19 @@ const notifyByEmail = async (res, notif)=> {
     notif.recipient = await findSingleUser({userId: notif.userId});
     notif.recipient = notif.recipient.dataValues;
 
-    console.log(notif);
+    //Use callback syntax for res.render to recieve the html text into a variable.
     res.render('notificationEmail', notif, (error, renderedEmail)=> {
       if (error) throw error;
 
-      sendMail(notif.recipient.email, notif.title, renderedEmail);
+      mailSent = sendMail(notif.recipient.email, notif.title, renderedEmail);
     });
+
+    return mailSent;
   }
   catch(error) {
+    mailSent = false;
     console.log(error);
+    return mailSent;
   }
 }
 
@@ -53,7 +59,8 @@ export const createNotification = async (req, res) => {
       .catch(e => { throw e; });
 
     if (notification) {
-      notifyByEmail(res, notification);
+      notification.mailSent = await notifyByEmail(res, notification);
+      console.log(notification.mailSent);
       return respondWithSuccess(res, 200, 'Notification added successfully', notification);
     }
   } catch (error) {
