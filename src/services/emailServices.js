@@ -1,7 +1,7 @@
 var nodemailer = require('nodemailer');
 import { EMAIL_ADDR, EMAIL_PASSWORD } from '../config/constants';
 
-export function sendMail(recipientAddr, title, messageBody) {
+export async function sendMail(recipientAddr, title, messageBody) {
   let success;
 
   var transporter = nodemailer.createTransport({
@@ -19,7 +19,7 @@ export function sendMail(recipientAddr, title, messageBody) {
     html: messageBody // html body
   };
   
-  transporter.sendMail(mailOptions, function(error, info){
+  await transporter.sendMail(mailOptions, function(error, info){
     if (error) {
       console.log(error);
       success = false;
