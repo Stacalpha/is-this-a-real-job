@@ -10,8 +10,6 @@ import {
   findSingleUser
 } from '../services/userServices';
 
-import crypto from 'crypto';
-
 /**
  * @param {object} req
  * @param {object} res
@@ -106,8 +104,6 @@ export const renderUserProfile = async (req, res) => {
     return res.render('404', { status: 404 });
   }
 
-  // Get users email hash
-
   let title;
   const description = `View ${user.name}'s profile on Is This A Real Job`;
 
@@ -123,8 +119,7 @@ export const renderUserProfile = async (req, res) => {
     isAdmin: req.auth.isAdmin,
     username: req.auth.username,
     name: req.auth.name,
-    meta: { title, description },
-    crypto
+    meta: { title, description }
   });
 };
 
@@ -145,8 +140,7 @@ export const renderAdminUsersPage = async (req, res) => {
     isAdmin: req.auth.isAdmin,
     username: req.auth.username,
     name: req.auth.name,
-    meta: { title, description },
-    crypto
+    meta: { title, description }
   });
 };
 
@@ -167,7 +161,6 @@ export const renderAdminReportedUsersPage = async (req, res) => {
     isAdmin: req.auth.isAdmin,
     username: req.auth.username,
     name: req.auth.name,
-    meta: { title, description },
-    crypto
+    meta: { title, description }
   });
 };

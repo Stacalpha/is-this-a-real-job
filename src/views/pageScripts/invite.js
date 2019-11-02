@@ -21,14 +21,14 @@ const refresh = (inviteId) => {
       down.querySelector('.count').innerText = res.data.downvotes;
 
       if (res.data.upvoted) {
-        up.dataset.voted = 'true';
-        down.dataset.voted = 'false';
+        up.dataset.upvoted = 'true';
+        down.dataset.downvoted = 'false';
       } else if (res.data.downvoted) {
-        up.dataset.voted = 'false';
-        down.dataset.voted = 'true';
+        up.dataset.upvoted = 'false';
+        down.dataset.downvoted = 'true';
       } else {
-        up.dataset.voted = 'false';
-        down.dataset.voted = 'false';
+        up.dataset.upvoted = 'false';
+        down.dataset.downvoted = 'false';
       }
     })
     .catch((err) => {
@@ -87,39 +87,15 @@ if (document.querySelector('#newInviteBtn')) {
   });
 }
 
-const setUp = (target, other, mode = 'set') => {
-  if (other.dataset.voted === 'true') {
-    const otherCount = other.querySelector('.count');
-    otherCount.innerText = +otherCount.innerText - 1;
-    other.dataset.voted = 'false';
-  }
-
-  const targetCount = target.querySelector('.count');
-
-  if (mode === 'set') {
-    target.dataset.voted = 'true';
-    targetCount.innerText = +targetCount.innerText + 1;
-  } else if (mode === 'del') {
-    target.dataset.voted = 'false';
-    targetCount.innerText = +targetCount.innerText - 1;
-  }
-}
-
 const upvotePostBtnHander = (event) => {
-  const { inviteid: inviteId, voted } = (event.target.nodeName === 'A') ? event.target.dataset : event.target.parentNode.dataset;
-  const target = (event.target.nodeName === 'A') ? event.target : event.target.parentNode;
-  const other = (event.target.nodeName === 'A') ? event.target.parentNode.querySelector('.downvote-btn') : event.target.parentNode.parentNode.querySelector('.downvote-btn');
+  const { inviteid: inviteId, upvoted } = (event.target.nodeName === 'A') ? event.target.dataset : event.target.parentNode.dataset;
 
-  console.log('the target', target, "the other", other);
-
-  if (voted === 'false') {
-    setUp(target, other);
+  if (upvoted === 'false') {
     newApi.Patch(`invites/${inviteId}/upvote`, JSON.stringify({}), true)
       .then((res) => {
         refresh(inviteId);
       })
       .catch((err) => {
-        refresh(inviteId);
         notification.innerHTML = `<strong>${err.data.message}:</strong> ${err.data.payload}`;
         notification.className += ' show';
         setTimeout(() => {
@@ -127,13 +103,11 @@ const upvotePostBtnHander = (event) => {
         }, 5000);
       });
   } else {
-    setUp(target, other, 'del');
     newApi.Delete(`invites/${inviteId}/vote`, JSON.stringify({}), true)
       .then((res) => {
         refresh(inviteId);
       })
       .catch((err) => {
-        refresh(inviteId);
         notification.innerHTML = `<strong>${err.data.message}:</strong> ${err.data.payload}`;
         notification.className += ' show';
         setTimeout(() => {
@@ -144,18 +118,14 @@ const upvotePostBtnHander = (event) => {
 };
 
 const downvotePostBtnHander = (event) => {
-  const { inviteid: inviteId, voted } = (event.target.nodeName === 'A') ? event.target.dataset : event.target.parentNode.dataset;
-  const target = (event.target.nodeName === 'A') ? event.target : event.target.parentNode;
-  const other = (event.target.nodeName === 'A') ? event.target.parentNode.querySelector('.upvote-btn') : event.target.parentNode.parentNode.querySelector('.upvote-btn');
+  const { inviteid: inviteId, downvoted } = (event.target.nodeName === 'A') ? event.target.dataset : event.target.parentNode.dataset;
 
-  if (voted === 'false') {
-    setUp(target, other);
+  if (downvoted === 'false') {
     newApi.Patch(`invites/${inviteId}/downvote`, JSON.stringify({}), true)
       .then((res) => {
         refresh(inviteId);
       })
       .catch((err) => {
-        refresh(inviteId);
         notification.innerHTML = `<strong>${err.data.message}:</strong> ${err.data.payload}`;
         notification.className += ' show';
         setTimeout(() => {
@@ -163,13 +133,11 @@ const downvotePostBtnHander = (event) => {
         }, 5000);
       });
   } else {
-    setUp(target, other, 'del');
     newApi.Delete(`invites/${inviteId}/vote`, JSON.stringify({}), true)
       .then((res) => {
         refresh(inviteId);
       })
       .catch((err) => {
-        refresh(inviteId);
         notification.innerHTML = `<strong>${err.data.message}:</strong> ${err.data.payload}`;
         notification.className += ' show';
         setTimeout(() => {
